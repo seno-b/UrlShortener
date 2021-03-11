@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <script src="../static/plugins/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div>
+        <label th:for="'url'" th:text="'URL을 입력해주세요. (http protocol 포함 입니다.)'">URL을 입력해주세요. (http protocol 포함 입니다.)</label>
+        <br>
+        <input th:id="'url'" type="url" th:style="'width:400px;'"/>
+        <button th:type="'button'" th:id="'convertSubmitBtn'" th:text="'변환'">변환</button>
+        <p th:id="'result'"></p>
+    </div>
+
+    <script type="text/javascript">
+        $(function(){
+
+            $("#convertSubmitBtn").click(function(){
+                var input_url = $("#url").val();
+
+                $.ajax({
+                    method: "POST",
+                    url: "/convert/url",
+                    data: { convert_url:input_url }
+                }).done(function( msg ) {
+                    // alert( "Data Saved: " + msg );
+                    console.log(msg);
+                    if(typeof msg.short_url == "undefined"){
+                        $("#result").html(input_url + "은 올바른 URL이 아닙니다. 다시 입력해주세요.");
+                    }else{
+                        $("#result").html("변환된 URL = " + msg.short_url + "</a> <br> 총 접근 횟수 : " + msg.request_count);
+                    }
+                }).fail(function( msg ){
+                    // alert("fail!! " + msg);
+                }).then(function( msg ){
+                    // alert("than!! " + msg );
+                }).always(function( msg ){
+                    // alert("always " + msg );
+                });
+
+            });
+
+        });
+    </script>
+
+</body>
+</html>
